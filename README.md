@@ -38,8 +38,8 @@ The following instructions suppose you have already installed a recent version o
 > **Step 1** - Clone the SwapID - Full Body Person Swap repository
 ```bash
 # Installation commands
-$ git clone https://github.com/piktid/swapid-person-swap.git
-$ cd swapid-person-swap
+$ git clone https://github.com/piktid/swapid-person.git
+$ cd swapid-person
 ```
 
 > **Step 2** - Export your email and password as environmental variables
@@ -63,7 +63,7 @@ $ python3 main_full.py --target_path '/path/to/target/image.jpg' --reference_pat
 You can customize the generation with advanced parameters:
 
 ```bash
-# Full body swap with custom parameters
+# Full body swap with custom parameters (e.g. including hair)
 $ python3 main_full.py --target_path '/path/to/target.jpg' --reference_path '/path/to/reference.jpg' --body --hair --seed 12345 --swap_strength 0.55 --person_strength 0.9
 ```
 
@@ -77,19 +77,19 @@ $ python3 main_full.py --target_path '/path/to/target.jpg' --reference_path '/pa
 - **target_name**: Target image code name (overrides target_path if provided)
 - **reference_name**: Reference image code name (overrides reference_path if provided)
 
-### Swap Control Parameters
-- **--body**: Enable full body swap (recommended for best results)
-- **--hair**: Include hair in the swap (head-swap mode)
-- **swap_strength**: Face similarity level with reference (range 0-1)
-- **id_face**: Index of the face to swap in target image (default: 0)
-
 ### Generation Parameters
 - **seed**: Random seed for reproducible results
 - **prompt**: Target image description for enhanced generation
 - **controlnet_scale**: Resemblance with target face (range 0-2)
 - **guidance_scale**: Generation guidance scale (range 1-20)
 
+### Swap Control Parameters
+- **--hair**: Include hair in the swap (head-swap mode)
+- **swap_strength**: Face similarity level with reference (range 0-1)
+- **id_face**: Index of the face to swap in target image (default: 0)
+
 ### Person Edit Parameters
+- **--body**: Enable full body swap (recommended for best results)
 - **person_strength**: Similarity with reference person (range 0-1)
 - **var_strength**: Creativity level in generation (range 0-1)
 - **id_person**: Index of person to modify in target image (default: 0)
