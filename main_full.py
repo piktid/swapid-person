@@ -128,12 +128,7 @@ if __name__ == '__main__':
 
             'SWAP_STRENGTH': SWAP_STRENGTH,
             'ID_FACE': ID_FACE,
-            'HEADSWAP': HEADSWAP,
-
-            'OPTIONS': {
-                        'eraseid_gpu': True,
-                        },
-
+            'HEADSWAP': HEADSWAP
         }
 
     # --------------------------------
