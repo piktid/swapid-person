@@ -167,6 +167,7 @@ def consistent_generation_call(idx_face, PARAM_DICTIONARY, TOKEN_DICTIONARY):
     SEED = PARAM_DICTIONARY.get('SEED')
     PROMPT = PARAM_DICTIONARY.get('PROMPT')
     PROMPT_STRENGTH = PARAM_DICTIONARY.get('SWAP_STRENGTH')
+    TRANSFER_HAIR = PARAM_DICTIONARY.get('TRANSFER_HAIR')
 
     OPTIONS_DICT = {'flag_replace_and_download': True}
 
@@ -176,7 +177,11 @@ def consistent_generation_call(idx_face, PARAM_DICTIONARY, TOKEN_DICTIONARY):
     if PROMPT_STRENGTH is not None:
         OPTIONS_DICT = {**OPTIONS_DICT, 'prompt_strength': PROMPT_STRENGTH}     
 
+    if TRANSFER_HAIR:
+        OPTIONS_DICT = {**OPTIONS_DICT, 'transfer_hair': TRANSFER_HAIR}
+
     data = {'id_image': image_address, 'id_face': idx_face, 'identity_name': identity_name, 'options': json.dumps(OPTIONS_DICT)}
+    
     if PROMPT is not None:
         data = {**data, 'prompt': PROMPT, 'description_type': 'txt'}
 

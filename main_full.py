@@ -37,8 +37,9 @@ if __name__ == '__main__':
     parser.add_argument('--id_person', help='Person to modify', type=int, default=0)
 
     # SWAP PARAMETERS
-    parser.add_argument('--body', help='Change also the body', action='store_true')
-    parser.add_argument('--hair', help='Change also the hair', action='store_true')
+    parser.add_argument('--body', help='Modify the body of the target image', action='store_true')
+    parser.add_argument('--hair', help='Modify the hair of the target image', action='store_true')
+    parser.add_argument('--transfer_hair', help='Transfer source hair to target when possible', action='store_true')
     parser.add_argument('--swap_strength', help='Similarity with the reference face level (range 0-1)', type=float, default=None)
     parser.add_argument('--id_face', help='Index of the face to change in the target image', type=int, default=0)
 
@@ -62,6 +63,7 @@ if __name__ == '__main__':
 
     # SWAP PARAMETERS
     HEADSWAP = args.hair  # True if the swap shall include the hair (Head-swap)
+    TRANSFER_HAIR = args.transfer_hair  # True if to transfer source hair into target
     ID_FACE = args.id_face  # index of the person in the target image to swap
     SWAP_STRENGTH = args.swap_strength
 
@@ -128,7 +130,8 @@ if __name__ == '__main__':
 
             'SWAP_STRENGTH': SWAP_STRENGTH,
             'ID_FACE': ID_FACE,
-            'HEADSWAP': HEADSWAP
+            'HEADSWAP': HEADSWAP,
+            'TRANSFER_HAIR': TRANSFER_HAIR
         }
 
     # --------------------------------
