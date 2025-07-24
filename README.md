@@ -5,7 +5,7 @@
 </p>
 
 
-# SwapID - Full Body Person Swap 1.0.0
+# SwapID - Full Body Person Swap 1.1.0
 [![Official Website](https://img.shields.io/badge/Official%20Website-piktid.com-blue?style=flat&logo=world&logoColor=white)](https://piktid.com)
 [![Discord Follow](https://dcbadge.vercel.app/api/server/FJU39e9Z4P?style=flat)](https://discord.com/invite/FJU39e9Z4P)
 
@@ -63,8 +63,8 @@ $ python3 main_full.py --target_path '/path/to/target/image.jpg' --reference_pat
 You can customize the generation with advanced parameters:
 
 ```bash
-# Full body swap with custom parameters (e.g. including hair)
-$ python3 main_full.py --target_path '/path/to/target.jpg' --reference_path '/path/to/reference.jpg' --body --hair --seed 12345 --swap_strength 0.55 --person_strength 0.9
+# Full body swap with custom parameters (e.g. including hair transfer)
+$ python3 main_full.py --target_path '/path/to/target.jpg' --reference_path '/path/to/reference.jpg' --body --hair --transfer_hair --seed 12345 --swap_strength 0.55 --person_strength 0.9
 ```
 
 ## Available Parameters
@@ -85,6 +85,7 @@ $ python3 main_full.py --target_path '/path/to/target.jpg' --reference_path '/pa
 
 ### Swap Control Parameters
 - **--hair**: Include hair in the swap (head-swap mode)
+- **transfer_hair**: Transfer source hair into target (transfer-hair mode)
 - **swap_strength**: Face similarity level with reference (range 0-1)
 - **id_face**: Index of the face to swap in target image (default: 0)
 
@@ -109,6 +110,11 @@ python3 main_full.py --target_path './images/target.jpg' --reference_path './ima
 ### Advanced Full Body Swap with Hair
 ```bash
 python3 main_full.py --target_path './images/target.jpg' --reference_path './images/reference.jpg' --body --hair --swap_strength 0.55 --person_strength 0.9 --controlnet_scale 0.1
+```
+
+### Advanced Full Body Swap with Hair Transfer
+```bash
+python3 main_full.py --target_path './images/target.jpg' --reference_path './images/reference.jpg' --body --hair --transfer_hair --swap_strength 0.55 --person_strength 0.9 --controlnet_scale 0.1
 ```
 
 ## Contact

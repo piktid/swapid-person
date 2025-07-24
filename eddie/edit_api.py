@@ -199,7 +199,6 @@ def generate_variation_call(PARAM_DICTIONARY, TOKEN_DICTIONARY):
     if PROMPT is not None:
         data = {**data, 'prompt': PROMPT}
 
-    OPTIONS_DICT = PARAM_DICTIONARY.get('OPTIONS', {})
 
     GUIDANCE_SCALE = PARAM_DICTIONARY.get('GUIDANCE_SCALE')
     PROMPT_STRENGTH = PARAM_DICTIONARY.get('PERSON_STRENGTH')
@@ -208,7 +207,8 @@ def generate_variation_call(PARAM_DICTIONARY, TOKEN_DICTIONARY):
 
     SEED = PARAM_DICTIONARY.get('SEED')
 
-    REF_NAME = OPTIONS_DICT.get('reference_name')
+    REF_NAME = PARAM_DICTIONARY.get('REF_NAME')
+    OPTIONS_DICT = PARAM_DICTIONARY.get('OPTIONS', {})
 
     if PROMPT_STRENGTH is not None:
         OPTIONS_DICT = {**OPTIONS_DICT, 'strength': PROMPT_STRENGTH}
@@ -227,7 +227,7 @@ def generate_variation_call(PARAM_DICTIONARY, TOKEN_DICTIONARY):
 
     if REF_NAME is not None:
         # force reference guidelines to 1
-        OPTIONS_DICT = {**OPTIONS_DICT, 'ip_scale': 1}
+        OPTIONS_DICT = {**OPTIONS_DICT, 'ip_scale': 1, 'reference_name': REF_NAME}
 
     data = {**data, 'options': json.dumps(OPTIONS_DICT)}
 
