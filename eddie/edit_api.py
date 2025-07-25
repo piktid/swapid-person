@@ -257,14 +257,14 @@ def generate_variation_call(PARAM_DICTIONARY, TOKEN_DICTIONARY):
 
 
 # -----------NOTIFICATIONS FUNCTIONS------------
-def get_notification_by_name(name_list, TOKEN_DICTIONARY):
+def get_notification_by_name(name_list, PARAM_DICTIONARY, TOKEN_DICTIONARY):
     # name_list='new_generation, progress, error'
     TOKEN = TOKEN_DICTIONARY.get('access_token', '')
     URL_API = TOKEN_DICTIONARY.get('url_api')
 
     response = requests.post(URL_API+'/notification_by_name_json',
                              headers={'Authorization': 'Bearer '+TOKEN},
-                             json={'name_list': name_list},
+                             json={'name_list': name_list, 'id_image': PARAM_DICTIONARY.get('TARGET_NAME')},
                              )
     # if the access token is expired
     if response.status_code == 401:
@@ -273,7 +273,7 @@ def get_notification_by_name(name_list, TOKEN_DICTIONARY):
         TOKEN = TOKEN_DICTIONARY.get('access_token', '')
         response = requests.post(URL_API+'/notification_by_name_json',
                                  headers={'Authorization': 'Bearer '+TOKEN},
-                                 json={'name_list': name_list},
+                                 json={'name_list': name_list, 'id_image': PARAM_DICTIONARY.get('TARGET_NAME')},
                                  )
     # print(response.text)
     response_json = json.loads(response.text)
@@ -303,13 +303,15 @@ def delete_notification(notification_id, TOKEN_DICTIONARY):
     return response.text
 
 
-def handle_notifications(image_id, idx_person, TOKEN_DICTIONARY):
+def handle_notifications(PARAM_DICTIONARY, TOKEN_DICTIONARY):
 
+    image_id = PARAM_DICTIONARY.get('TARGET_NAME')
+    idx_person = PARAM_DICTIONARY.get('ID_PERSON', 0)
     # check notifications to verify the generation status
     i = 0
     while i < 120:  # max 120 iterations -> then timeout
         i = i+1
-        notifications_list = get_notification_by_name('edit_generate', TOKEN_DICTIONARY)
+        notifications_list = get_notification_by_name('edit_generate', PARAM_DICTIONARY, TOKEN_DICTIONARY)
         print(notifications_list)
         notifications_to_remove = [n for n in notifications_list if (n.get('name') == 'edit_generate' and n.get('data').get('address') == image_id and n.get('data').get('id_person') == idx_person)]
 

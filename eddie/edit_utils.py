@@ -48,7 +48,7 @@ def process_image(PARAM_DICTIONARY, TOKEN_DICTIONARY):
     print(response_json)
     
     # Asynchronous API call to get the output
-    flag_response, response_notifications = handle_notifications(TARGET_NAME, idx_person, TOKEN_DICTIONARY)
+    flag_response, response_notifications = handle_notifications(PARAM_DICTIONARY=PARAM_DICTIONARY, TOKEN_DICTIONARY=TOKEN_DICTIONARY)
     if flag_response is False:
         # Error
         print('Error retrieving the generated images. No images found after 60 attempts')
