@@ -37,7 +37,7 @@ def process_image(PARAM_DICTIONARY):
     print(f'Generating a new person using {TARGET_NAME} for idx_person: {idx_person}')
     PARAM_DICTIONARY['ID_PERSON'] = idx_person
     response_json = generate_variation_call(PARAM_DICTIONARY=PARAM_DICTIONARY)
-    print(response_json)
+    #print(response_json)
     
     # Asynchronous API call to get the output
     flag_response, response_notifications = handle_notifications(TARGET_NAME, idx_person)
