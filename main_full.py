@@ -1,15 +1,10 @@
 import os
 import sys
-import json
 import argparse
-from io import BytesIO
 from random import randint
-from PIL import Image, ImageFile, ImageFilter
-
 from swapid.swap_utils import process_image as process_swap
 from eddie.edit_utils import process_image as process_person
-from eddie.edit_api import start_call
-
+from auth import piktid_auth
 
 if __name__ == '__main__':
 
@@ -44,10 +39,6 @@ if __name__ == '__main__':
     parser.add_argument('--id_face', help='Index of the face to change in the target image', type=int, default=0)
 
     args = parser.parse_args()
-
-    # be sure to export your email and psw as environmental variables
-    EMAIL = os.getenv("SWAPID_EMAIL")
-    PASSWORD = os.getenv("SWAPID_PASSWORD")
 
     # GLOBAL PARAMETERS
     PROMPT = args.prompt
@@ -104,11 +95,6 @@ if __name__ == '__main__':
             print('Wrong face url, check again')
             sys.exit()
 
-    # log in or use token
-    TOKEN_DICTIONARY = start_call(EMAIL, PASSWORD)
-
-    print(TOKEN_DICTIONARY)
-
     # initialize the parameters dictionary
     PARAM_DICTIONARY = {
 
@@ -134,11 +120,16 @@ if __name__ == '__main__':
             'TRANSFER_HAIR': TRANSFER_HAIR
         }
 
+    # Authenticate and get the access token
+    if not piktid_auth():
+        print('Authentication failed, please check your credentials')
+        sys.exit()
+    
     # --------------------------------
     # PROCESSING STARTS HERE
     if BODYSWAP:
         # generate the full body based on the reference face
-        response, image_edited_person_link = process_person(PARAM_DICTIONARY, TOKEN_DICTIONARY)
+        response, image_edited_person_link = process_person(PARAM_DICTIONARY)
         
         # reset the target image parameters
         PARAM_DICTIONARY['TARGET_NAME'] = None
@@ -146,4 +137,4 @@ if __name__ == '__main__':
         PARAM_DICTIONARY['TARGET_URL'] = image_edited_person_link
 
     # swap the reference face on the target edited image
-    response, image_edited_swap_link = process_swap(PARAM_DICTIONARY, TOKEN_DICTIONARY)
+    response, image_edited_swap_link = process_swap(PARAM_DICTIONARY)
