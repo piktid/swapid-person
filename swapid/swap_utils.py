@@ -1,23 +1,14 @@
-import os
-import sys
-import json
-import requests
-from io import BytesIO
-from PIL import Image, ImageFile, ImageFilter
-
 from .consistent_identities_api import upload_target_call, upload_face_call, consistent_generation_call, handle_notifications_new_swap_download
 
 
-def process_image(PARAM_DICTIONARY, TOKEN_DICTIONARY):
-
-
+def process_image(PARAM_DICTIONARY):
     FACE_NAME = PARAM_DICTIONARY.get('FACE_NAME') # it is different from REF_NAME
     TARGET_NAME = PARAM_DICTIONARY.get('TARGET_NAME')
 
     # currently, it works only with one face in both source and target images
     if FACE_NAME is None:
         print('Uploading the reference face image')
-        response_json = upload_face_call(PARAM_DICTIONARY=PARAM_DICTIONARY, TOKEN_DICTIONARY=TOKEN_DICTIONARY)
+        response_json = upload_face_call(PARAM_DICTIONARY=PARAM_DICTIONARY)
         FACE_NAME = response_json.get('identity_name')
         print(f'Face name: {FACE_NAME}')
         PARAM_DICTIONARY['FACE_NAME'] = FACE_NAME
@@ -26,7 +17,7 @@ def process_image(PARAM_DICTIONARY, TOKEN_DICTIONARY):
 
     if TARGET_NAME is None:
         print('Uploading the target image')
-        image_id, indices_info, selected_faces_list = upload_target_call(PARAM_DICTIONARY=PARAM_DICTIONARY, TOKEN_DICTIONARY=TOKEN_DICTIONARY)
+        image_id, indices_info, selected_faces_list = upload_target_call(PARAM_DICTIONARY=PARAM_DICTIONARY)
         print(f'Target name: {image_id}')
         PARAM_DICTIONARY['TARGET_NAME'] = image_id
 
@@ -36,11 +27,11 @@ def process_image(PARAM_DICTIONARY, TOKEN_DICTIONARY):
 
     idx_face = PARAM_DICTIONARY.get('ID_FACE', 0)  # select which person in the target image you want to swap with the input face
     print(f'Generating a new face using {FACE_NAME} for idx_face: {idx_face}')
-    response = consistent_generation_call(idx_face=idx_face, PARAM_DICTIONARY=PARAM_DICTIONARY, TOKEN_DICTIONARY=TOKEN_DICTIONARY)
-    print(response)
+    response = consistent_generation_call(idx_face=idx_face, PARAM_DICTIONARY=PARAM_DICTIONARY)
+    #print(response)
 
     # Asynchronous API call to get the output
-    flag_response, response_notifications = handle_notifications_new_swap_download(image_id, idx_face, TOKEN_DICTIONARY)
+    flag_response, response_notifications = handle_notifications_new_swap_download(image_id, idx_face)
 
     if flag_response is False:
         # Error

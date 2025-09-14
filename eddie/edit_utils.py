@@ -1,15 +1,7 @@
-import os
-import sys
-import json
-import requests
-from io import BytesIO
-from PIL import Image, ImageFile, ImageFilter
-from random import randint
-
-from .edit_api import upload_target_call, upload_reference_call, generate_variation_call, open_image_from_url, handle_notifications
+from .edit_api import upload_target_call, upload_reference_call, generate_variation_call, handle_notifications
 
 
-def process_image(PARAM_DICTIONARY, TOKEN_DICTIONARY):
+def process_image(PARAM_DICTIONARY):
 
     TARGET_NAME = PARAM_DICTIONARY.get('TARGET_NAME')
 
@@ -19,7 +11,7 @@ def process_image(PARAM_DICTIONARY, TOKEN_DICTIONARY):
     
     if REF_NAME is None and (REF_PATH is not None or REF_URL is not None):
         print('Uploading the reference image')
-        response_json = upload_reference_call(PARAM_DICTIONARY=PARAM_DICTIONARY, TOKEN_DICTIONARY=TOKEN_DICTIONARY)
+        response_json = upload_reference_call(PARAM_DICTIONARY=PARAM_DICTIONARY)
         REF_NAME = response_json.get('reference_name')
         print(f'ref_name: {REF_NAME}')
         if REF_NAME is None:
@@ -35,7 +27,7 @@ def process_image(PARAM_DICTIONARY, TOKEN_DICTIONARY):
     # currently, it works only with one face in both source and target images
     if TARGET_NAME is None:
         print('Uploading the target image')
-        response_json = upload_target_call(PARAM_DICTIONARY=PARAM_DICTIONARY, TOKEN_DICTIONARY=TOKEN_DICTIONARY)
+        response_json = upload_target_call(PARAM_DICTIONARY=PARAM_DICTIONARY)
         TARGET_NAME = response_json.get('id_image')
         PARAM_DICTIONARY['TARGET_NAME'] = TARGET_NAME
     else:
@@ -44,11 +36,11 @@ def process_image(PARAM_DICTIONARY, TOKEN_DICTIONARY):
     idx_person = PARAM_DICTIONARY.get('ID_PERSON', 0)
     print(f'Generating a new person using {TARGET_NAME} for idx_person: {idx_person}')
     PARAM_DICTIONARY['ID_PERSON'] = idx_person
-    response_json = generate_variation_call(PARAM_DICTIONARY=PARAM_DICTIONARY, TOKEN_DICTIONARY=TOKEN_DICTIONARY)
-    print(response_json)
+    response_json = generate_variation_call(PARAM_DICTIONARY=PARAM_DICTIONARY)
+    #print(response_json)
     
     # Asynchronous API call to get the output
-    flag_response, response_notifications = handle_notifications(TARGET_NAME, idx_person, TOKEN_DICTIONARY)
+    flag_response, response_notifications = handle_notifications(TARGET_NAME, idx_person)
     if flag_response is False:
         # Error
         print('Error retrieving the generated images. No images found after 60 attempts')
