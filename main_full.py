@@ -67,6 +67,7 @@ if __name__ == '__main__':
     REF_PATH = args.reference_path
     REF_URL = args.reference_url
     REF_NAME = args.reference_name
+    FACE_NAME = None
 
     if TARGET_PATH is not None:
         if os.path.exists(TARGET_PATH):
@@ -87,13 +88,18 @@ if __name__ == '__main__':
         else:
             print('Wrong face path, check again')
             sys.exit()
+        
+    elif REF_NAME is not None:
+        print(f'Using the input reference located at: {REF_NAME}')
+        REF_URL = None  # to avoid conflicts
+        FACE_NAME = REF_NAME  # to avoid conflicts
+    
+    elif REF_URL is not None:
+        print(f'Using the input reference located at: {REF_URL}')
+        
     else:
-        print('Face path not assigned, check again')
-        if REF_URL is not None:
-            print(f'Using the input reference located at: {REF_URL}')
-        else:
-            print('Wrong face url, check again')
-            sys.exit()
+        print('No reference image provided, check again')
+        sys.exit()
 
     # initialize the parameters dictionary
     PARAM_DICTIONARY = {
@@ -117,7 +123,8 @@ if __name__ == '__main__':
             'SWAP_STRENGTH': SWAP_STRENGTH,
             'ID_FACE': ID_FACE,
             'HEADSWAP': HEADSWAP,
-            'TRANSFER_HAIR': TRANSFER_HAIR
+            'TRANSFER_HAIR': TRANSFER_HAIR,
+            'FACE_NAME': FACE_NAME if FACE_NAME is not None else None,
         }
 
     # Authenticate and get the access token

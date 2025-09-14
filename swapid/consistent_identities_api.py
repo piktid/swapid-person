@@ -114,24 +114,37 @@ def upload_target_call(PARAM_DICTIONARY):
 
 
 def upload_face_call(PARAM_DICTIONARY):
-
+    identity_name = PARAM_DICTIONARY.get('REF_NAME')
+    if identity_name is None:
+        print('No identity name provided, a new one will be created')
+        
     face_full_path = PARAM_DICTIONARY.get('REF_PATH')
-    if face_full_path is None:
+    if face_full_path is not None:
+        face_file = open(face_full_path, 'rb')
+        flag_upload_face = True
+    
+    elif PARAM_DICTIONARY.get('REF_URL') is not None:
         face_url = PARAM_DICTIONARY.get('REF_URL')
         face_response = requests.get(face_url)
         face_response.raise_for_status()  
         face_file = BytesIO(face_response.content)
         face_file.name = 'face.jpg' 
+        flag_upload_face = True
+        
+    elif PARAM_DICTIONARY.get('REF_NAME') is not None:
+        identity_name = PARAM_DICTIONARY.get('REF_NAME')
+        print(f"Using existing identity name: {identity_name}")
+        return None
     else:
-        face_file = open(face_full_path, 'rb')
+        print('No reference image provided, check again')
+        return None
 
-    identity_name = PARAM_DICTIONARY.get('REF_NAME')
-
+    
     # start the generation process given the image parameters
     response = requests.post(Config.URL_API+'/consistent_identities/upload_face', 
                               headers={'Authorization': f"Bearer {os.environ['ACCESS_TOKEN']}"},
                              files={'file': face_file},
-                             data={'identity_name': identity_name},
+                             data={**({'identity_name': identity_name } if identity_name is not None else {})},
                              )
 
     if response.status_code == 401:
@@ -140,7 +153,7 @@ def upload_face_call(PARAM_DICTIONARY):
         response = requests.post(Config.URL_API+'/consistent_identities/upload_face', 
                                   headers={'Authorization': f"Bearer {os.environ['ACCESS_TOKEN']}"},
                                  files={'file': face_file},
-                                 data={'identity_name': identity_name},
+                                 data={**({'identity_name': identity_name } if identity_name is not None else {})},
                                  )
 
     response_json = json.loads(response.text)
