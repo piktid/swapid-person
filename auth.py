@@ -75,7 +75,7 @@ def refresh_call():
             print('EMAIL or PASSWORD environment variables not found. Please set them to proceed.')
             return False
         
-        TOKEN_DICTIONARY = start_call(email=PIKTID_EMAIL, password=PIKTID_PASSWORD) o
+        TOKEN_DICTIONARY = start_call(email=PIKTID_EMAIL, password=PIKTID_PASSWORD)
         # Save the tokens in the environment variables for future use
         os.environ['ACCESS_TOKEN'] = TOKEN_DICTIONARY.get('access_token', '')
         os.environ['REFRESH_TOKEN'] = TOKEN_DICTIONARY.get('refresh_token', '')
