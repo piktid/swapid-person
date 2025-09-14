@@ -250,7 +250,6 @@ def delete_notification(notification_id):
 
 
 def handle_notifications(image_id, idx_person):
-
     # check notifications to verify the generation status
     i = 0
     while i < 120:  # max 120 iterations -> then timeout
