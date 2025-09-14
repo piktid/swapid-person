@@ -1,15 +1,10 @@
 import os
 import sys
-import json
 import argparse
-from io import BytesIO
 from random import randint
-from PIL import Image, ImageFile, ImageFilter
-
 from swapid.swap_utils import process_image as process_swap
 from eddie.edit_utils import process_image as process_person
-from eddie.edit_api import start_call
-
+from auth import piktid_auth
 
 if __name__ == '__main__':
 
@@ -45,10 +40,6 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    # be sure to export your email and psw as environmental variables
-    EMAIL = os.getenv("SWAPID_EMAIL")
-    PASSWORD = os.getenv("SWAPID_PASSWORD")
-
     # GLOBAL PARAMETERS
     PROMPT = args.prompt
     CONTROLNET_SCALE = args.controlnet_scale
@@ -76,6 +67,7 @@ if __name__ == '__main__':
     REF_PATH = args.reference_path
     REF_URL = args.reference_url
     REF_NAME = args.reference_name
+    FACE_NAME = None
 
     if TARGET_PATH is not None:
         if os.path.exists(TARGET_PATH):
@@ -96,18 +88,18 @@ if __name__ == '__main__':
         else:
             print('Wrong face path, check again')
             sys.exit()
+        
+    elif REF_NAME is not None:
+        print(f'Using the input reference located at: {REF_NAME}')
+        REF_URL = None  # to avoid conflicts
+        FACE_NAME = REF_NAME  # to avoid conflicts
+    
+    elif REF_URL is not None:
+        print(f'Using the input reference located at: {REF_URL}')
+        
     else:
-        print('Face path not assigned, check again')
-        if REF_URL is not None:
-            print(f'Using the input reference located at: {REF_URL}')
-        else:
-            print('Wrong face url, check again')
-            sys.exit()
-
-    # log in or use token
-    TOKEN_DICTIONARY = start_call(EMAIL, PASSWORD)
-
-    print(TOKEN_DICTIONARY)
+        print('No reference image provided, check again')
+        sys.exit()
 
     # initialize the parameters dictionary
     PARAM_DICTIONARY = {
@@ -131,14 +123,20 @@ if __name__ == '__main__':
             'SWAP_STRENGTH': SWAP_STRENGTH,
             'ID_FACE': ID_FACE,
             'HEADSWAP': HEADSWAP,
-            'TRANSFER_HAIR': TRANSFER_HAIR
+            'TRANSFER_HAIR': TRANSFER_HAIR,
+            'FACE_NAME': FACE_NAME if FACE_NAME is not None else None,
         }
 
+    # Authenticate and get the access token
+    if not piktid_auth():
+        print('Authentication failed, please check your credentials')
+        sys.exit()
+    
     # --------------------------------
     # PROCESSING STARTS HERE
     if BODYSWAP:
         # generate the full body based on the reference face
-        response, image_edited_person_link = process_person(PARAM_DICTIONARY, TOKEN_DICTIONARY)
+        response, image_edited_person_link = process_person(PARAM_DICTIONARY)
         
         # reset the target image parameters
         PARAM_DICTIONARY['TARGET_NAME'] = None
@@ -146,4 +144,4 @@ if __name__ == '__main__':
         PARAM_DICTIONARY['TARGET_URL'] = image_edited_person_link
 
     # swap the reference face on the target edited image
-    response, image_edited_swap_link = process_swap(PARAM_DICTIONARY, TOKEN_DICTIONARY)
+    response, image_edited_swap_link = process_swap(PARAM_DICTIONARY)
